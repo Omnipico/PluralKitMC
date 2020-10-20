@@ -1,0 +1,11 @@
+name: PluralKitMC
+version: 0.0.1
+author: Allymonies
+main: com.omnipico.pluralkitmc.PluralKitMC
+api-version: 1.16
+website: omnipico.com
+commands:
+  pk:
+    description: Base command for PluralKitMC
+    usage: /pk <help>
+    permission: pluralkitmc.pk

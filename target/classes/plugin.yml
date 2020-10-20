@@ -1,0 +1,29 @@
+name: PluralKitMC
+version: 0.3.8
+author: Allymonies
+main: com.omnipico.pluralkitmc.PluralKitMC
+api-version: 1.16
+website: omnipico.com
+depend: [Vault]
+commands:
+  pk:
+    description: Base command for PluralKitMC
+    usage: /pk <help>
+    permission: pluralkitmc.pk
+permissions:
+  pluralkitmc.pk:
+    default: true
+    description: Allows usage of /pk
+  pluralkitmc.update:
+    default: true
+    description: Allows manually updating one's system, bypassing the cache
+  pluralkitmc.link:
+    default: true
+    description: Allows linking one's pluralkit token to Minecraft (bypassing privacy settings)
+  pluralkitmc.*:
+    default: op
+    description: Allows access to every pluralkitmc command.
+    children:
+      pluralkitmc.pk: true
+      pluralkitmc.update: true
+      pluralkitmc.link: true
