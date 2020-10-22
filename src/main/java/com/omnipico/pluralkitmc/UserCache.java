@@ -32,9 +32,7 @@ public class UserCache {
         this.systemId = systemId;
         this.plugin = plugin;
         config = plugin.getConfig();
-        if (config.getBoolean("cache_data", false)) {
-            loadFromConfig();
-        }
+        loadFromConfig();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
@@ -72,12 +70,17 @@ public class UserCache {
     }
 
     private void loadFromConfig() {
-        if (config.contains("players." + uuid.toString() + ".system_cache")) {
-            system = new Gson().fromJson(config.getString("players." + uuid.toString() + ".system_cache"), PluralKitSystem.class);
-        }
-        if (config.contains("players." + uuid.toString() + ".members_cache")) {
-            Type listType = new TypeToken<List<PluralKitMember>>(){}.getType();
-            members = new Gson().fromJson(config.getString("players." + uuid.toString() + ".members_cache"), listType);
+        autoProxyMode = config.getString("players." + uuid.toString() + ".ap_mode", "off");
+        autoProxyMember = config.getString("players." + uuid.toString() + ".ap_member", "");
+        if (config.getBoolean("cache_data", false)) {
+            if (config.contains("players." + uuid.toString() + ".system_cache")) {
+                system = new Gson().fromJson(config.getString("players." + uuid.toString() + ".system_cache"), PluralKitSystem.class);
+            }
+            if (config.contains("players." + uuid.toString() + ".members_cache")) {
+                Type listType = new TypeToken<List<PluralKitMember>>() {
+                }.getType();
+                members = new Gson().fromJson(config.getString("players." + uuid.toString() + ".members_cache"), listType);
+            }
         }
     }
 
