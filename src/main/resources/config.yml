@@ -6,6 +6,8 @@ default_name_color: "&b"
 message_format: "&f%prefix% %member% %suffix%&8>&f %message%"
 #NOTE: Adding hover text may break some plugins! If you're having issues, set this to no
 hover_text: yes
+#This determines whether PluralKitMC saves system & member data to disk for fastest retrieval
+cache_data: true
 #datatype: <flat/db>
 datatype: flat
 #Only if datatype is set to DB

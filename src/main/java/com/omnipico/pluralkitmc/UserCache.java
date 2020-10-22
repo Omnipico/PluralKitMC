@@ -3,6 +3,7 @@ package com.omnipico.pluralkitmc;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -25,10 +26,15 @@ public class UserCache {
     String lastProxied = null;
     List<PluralKitMember> fronters = new ArrayList<>();
     JavaPlugin plugin;
+    FileConfiguration config;
     public UserCache(UUID uuid, String systemId, JavaPlugin plugin) {
         this.uuid = uuid;
         this.systemId = systemId;
         this.plugin = plugin;
+        config = plugin.getConfig();
+        if (config.getBoolean("cache_data", false)) {
+            loadFromConfig();
+        }
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
@@ -42,6 +48,14 @@ public class UserCache {
         this.systemId = systemId;
         this.token = token;
         this.plugin = plugin;
+        config = plugin.getConfig();
+        loadFromConfig();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                Update();
+            }
+        });
     }
 
     public void Update() {
@@ -49,6 +63,22 @@ public class UserCache {
         lastUpdated = date.getTime();
         updateSystem();
         updateMembers();
+        if (config.getBoolean("cache_data", false)) {
+            Gson gson = new Gson();
+            config.set("players." + uuid.toString() + ".system_cache", gson.toJson(system));
+            config.set("players." + uuid.toString() + ".members_cache", gson.toJson(members));
+            plugin.saveConfig();
+        }
+    }
+
+    private void loadFromConfig() {
+        if (config.contains("players." + uuid.toString() + ".system_cache")) {
+            system = new Gson().fromJson(config.getString("players." + uuid.toString() + ".system_cache"), PluralKitSystem.class);
+        }
+        if (config.contains("players." + uuid.toString() + ".members_cache")) {
+            Type listType = new TypeToken<List<PluralKitMember>>(){}.getType();
+            members = new Gson().fromJson(config.getString("players." + uuid.toString() + ".members_cache"), listType);
+        }
     }
 
     private void updateSystem() {
