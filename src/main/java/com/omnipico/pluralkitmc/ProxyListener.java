@@ -1,17 +1,25 @@
 package com.omnipico.pluralkitmc;
 
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class ProxyListener implements Listener {
@@ -35,26 +43,74 @@ public class ProxyListener implements Listener {
 
     }
 
-    @EventHandler // Listening for the event.
+    @EventHandler(priority = EventPriority.HIGHEST) // Listening for the event.
     public void onChat(AsyncPlayerChatEvent event) {
         // Called when a player sends a chat message.
         Player player = event.getPlayer(); // Getting the player who sent the message.
         String message = event.getMessage();
+        PluralKitSystem system = data.getSystem(player.getUniqueId());
         PluralKitMember proxiedMember = data.getProxiedUser(player.getUniqueId(), message);
         PluralKitProxy pluralKitProxy = data.getProxy(player.getUniqueId(), message);
-        if (proxiedMember != null) {
+        if (proxiedMember != null && system != null) {
             String memberName = proxiedMember.name + " " + data.getSystemTag(player.getUniqueId());
             int prefixLength = pluralKitProxy.prefix != null ? pluralKitProxy.prefix.length() : 0;
             int suffixLength = pluralKitProxy.suffix != null ? pluralKitProxy.suffix.length() : 0;
             event.setMessage(message.substring(prefixLength, message.length()-suffixLength));
             String ourFormat = format;
-            ourFormat = ourFormat.replace("%member%", memberName.replace("%2$s","%%2$s"));
             String nameColor = proxiedMember.color == null ? defaultNameColor : ChatUtils.replaceColor("&#" + proxiedMember.color);
-            ourFormat = ourFormat.replace("%name_color%", nameColor);
+            //ourFormat = ourFormat.replace("%member%", nameColor + memberName.replace("%2$s","%%2$s"));
+            ourFormat = ourFormat.replace("%member%", nameColor + "%member%");
             ourFormat = ourFormat.replace("%prefix%", ChatUtils.replaceColor(chat.getPlayerPrefix(player)));
             ourFormat = ourFormat.replace("%suffix%", ChatUtils.replaceColor(chat.getPlayerSuffix(player)));
             //Bukkit.getLogger().info("format: " + ourFormat);
             event.setFormat(ourFormat.replaceAll("%","%%").replace("%%2$s","%2$s"));
+            if (config.getBoolean("hover_text", false)) {
+                String resultMessage = String.format(event.getFormat(), player.getDisplayName(), event.getMessage());
+                BaseComponent[] resultComponents = TextComponent.fromLegacyText(resultMessage);
+                ArrayList<BaseComponent> components = new ArrayList<>();
+                for (BaseComponent component : resultComponents) {
+                    if (component.toPlainText().startsWith("%member%")) {
+
+                        components.addAll(Arrays.asList(new ComponentBuilder(memberName)
+                                .color(component.getColor())
+                                .bold(component.isBold())
+                                .italic(component.isItalic())
+                                .obfuscated(component.isObfuscated())
+                                .strikethrough(component.isStrikethrough())
+                                .underlined(component.isUnderlined())
+                                .font(component.getFont())
+                                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                        new Text(new ComponentBuilder("User: ").color(ChatColor.GREEN)
+                                                .append(TextComponent.fromLegacyText(player.getDisplayName()))
+                                                .append("\nSystem: ").color(ChatColor.GREEN)
+                                                .append(system.getName()).color(ChatColor.AQUA)
+                                                .create()
+                                        )
+                                ))
+                                .create()));
+                        config.set("test", player.getDisplayName());
+                        if (component.toPlainText().length() > 8) {
+                            BaseComponent[] post = new ComponentBuilder(component.toPlainText().substring(8))
+                                    .color(component.getColor())
+                                    .bold(component.isBold())
+                                    .italic(component.isItalic())
+                                    .obfuscated(component.isObfuscated())
+                                    .strikethrough(component.isStrikethrough())
+                                    .underlined(component.isUnderlined())
+                                    .font(component.getFont())
+                                    .create();
+                            components.addAll(Arrays.asList(post));
+                        }
+                    } else {
+                        components.add(component);
+                    }
+                }
+                BaseComponent[] sendable = components.toArray(new BaseComponent[0]);
+                for (Player p : event.getRecipients()) {
+                    p.spigot().sendMessage(sendable);
+                }
+                event.setCancelled(true);
+            }
         }
     }
 

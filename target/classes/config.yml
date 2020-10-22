@@ -3,7 +3,9 @@
 cache_update_frequency: 300000
 #Message format, %member% is replaced with the member display name, %message% is replaced with the message
 default_name_color: "&b"
-message_format: "&f%prefix% %name_color%%member% %suffix%&8>&f %message%"
+message_format: "&f%prefix% %member% %suffix%&8>&f %message%"
+#NOTE: Adding hover text may break some plugins! If you're having issues, set this to no
+hover_text: yes
 #datatype: <flat/db>
 datatype: flat
 #Only if datatype is set to DB
