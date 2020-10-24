@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
@@ -11,18 +11,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/spigot-api-1.16.3-R0.1-20201017.202830-25.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: commons-lang:commons-lang:2.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.16-R0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-config:1.16-R0.4-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-event:1.16-R0.4-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-protocol:1.16-R0.4-SNAPSHOT" level="project" />
@@ -35,13 +30,10 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.netty:netty-buffer:4.1.53.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.netty:netty-transport:4.1.53.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.netty:netty-resolver:4.1.53.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.26" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.22" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.11.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.MilkBowl:VaultAPI:1.7" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.bukkit:bukkit:1.13.1-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
