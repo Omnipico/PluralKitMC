@@ -60,8 +60,14 @@ public class ProxyListener implements Listener {
             String nameColor = proxiedMember.color == null ? defaultNameColor : ChatUtils.replaceColor("&#" + proxiedMember.color);
             //ourFormat = ourFormat.replace("%member%", nameColor + memberName.replace("%2$s","%%2$s"));
             ourFormat = ourFormat.replace("%member%", nameColor + "%member%");
-            ourFormat = ourFormat.replace("%prefix%", ChatUtils.replaceColor(chat.getPlayerPrefix(player)));
-            ourFormat = ourFormat.replace("%suffix%", ChatUtils.replaceColor(chat.getPlayerSuffix(player)));
+            String prefix = "";
+            String suffix = "";
+            if (chat != null) {
+                prefix = ChatUtils.replaceColor(chat.getPlayerPrefix(player));
+                suffix = ChatUtils.replaceColor(chat.getPlayerSuffix(player));
+            }
+            ourFormat = ourFormat.replace("%prefix%", prefix);
+            ourFormat = ourFormat.replace("%suffix%", suffix);
             //Bukkit.getLogger().info("format: " + ourFormat);
             event.setFormat(ourFormat.replaceAll("%","%%").replace("%%2$s","%2$s"));
             if (config.getBoolean("hover_text", false)) {

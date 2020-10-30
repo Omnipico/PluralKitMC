@@ -1,5 +1,6 @@
 package com.omnipico.pluralkitmc;
 import net.milkbowl.vault.chat.Chat;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -8,7 +9,9 @@ public class PluralKitMC extends JavaPlugin {
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
-        chat = getServer().getServicesManager().load(Chat.class);
+        if(Bukkit.getServer().getPluginManager().getPlugin("Vault") != null){
+            chat = getServer().getServicesManager().load(Chat.class);
+        }
         FileConfiguration config = this.getConfig();
         PluralKitData data = new PluralKitData(config, this);
         //Fired when the server enables the plugin

@@ -1,10 +1,10 @@
 name: PluralKitMC
-version: 0.4.2
+version: 0.4.3
 author: Allymonies
 main: com.omnipico.pluralkitmc.PluralKitMC
 api-version: 1.16
 website: omnipico.com
-depend: [Vault]
+softdepend: [Vault]
 commands:
   pk:
     description: Base command for PluralKitMC
