@@ -76,7 +76,14 @@ public class ProxyListener implements Listener {
                 ArrayList<BaseComponent> components = new ArrayList<>();
                 for (BaseComponent component : resultComponents) {
                     if (component.toPlainText().startsWith("%member%")) {
-
+                        ComponentBuilder hoverTextBuilder = new ComponentBuilder("User: ").color(ChatColor.GREEN)
+                                .append(TextComponent.fromLegacyText(player.getDisplayName())).append("\nSystem: ").color(ChatColor.GREEN);
+                        if (system.getName() != null && system.getName().length() > 0) {
+                            hoverTextBuilder.append(system.getName()).color(ChatColor.AQUA);
+                        } else {
+                            hoverTextBuilder.append(system.getId()).color(ChatColor.GRAY);
+                        }
+                        Text hoverText = new Text(hoverTextBuilder.create());
                         components.addAll(Arrays.asList(new ComponentBuilder(memberName)
                                 .color(component.getColor())
                                 .bold(component.isBold())
@@ -86,12 +93,7 @@ public class ProxyListener implements Listener {
                                 .underlined(component.isUnderlined())
                                 .font(component.getFont())
                                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                        new Text(new ComponentBuilder("User: ").color(ChatColor.GREEN)
-                                                .append(TextComponent.fromLegacyText(player.getDisplayName()))
-                                                .append("\nSystem: ").color(ChatColor.GREEN)
-                                                .append(system.getName()).color(ChatColor.AQUA)
-                                                .create()
-                                        )
+                                        hoverText
                                 ))
                                 .create()));
                         config.set("test", player.getDisplayName());

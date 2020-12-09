@@ -65,9 +65,13 @@ public class ChatUtils {
         }
         ComponentBuilder memberInfoBuilder = new ComponentBuilder()
                 .append(pluginTag)
-                .append(" Member information for ").color(ChatColor.GREEN)
-                .append(member.name + " (" + system.name + ")").color(color)
-                .append("\nDisplay Name: ").color(ChatColor.GREEN).append(member.name).color(color);
+                .append(" Member information for ").color(ChatColor.GREEN);
+        if (system.name != null && system.name.length() > 0) {
+            memberInfoBuilder.append(member.name + " (" + system.name + ")").color(color);
+        } else {
+            memberInfoBuilder.append(member.name).color(color);
+        }
+        memberInfoBuilder.append("\nDisplay Name: ").color(ChatColor.GREEN).append(member.name).color(color);
         if (member.getBirthday() != null) {
             memberInfoBuilder.append("\nBirthday: ").color(ChatColor.GREEN).append(member.getBirthday()).color(ChatColor.AQUA);
         }
@@ -99,14 +103,17 @@ public class ChatUtils {
     static public BaseComponent[] displaySystemInfo(PluralKitSystem system) {
         ComponentBuilder systemInfoBuilder = new ComponentBuilder()
                 .append(pluginTag)
-                .append(" System information for ").color(ChatColor.GREEN)
-                .append(system.name).color(ChatColor.AQUA)
-                .append(" (").color(ChatColor.GREEN)
-                .append(system.id).color(ChatColor.GRAY)
-                .append(")").color(ChatColor.GREEN)
-                .append("\nTag: ").color(ChatColor.GREEN);
+                .append(" System information for ").color(ChatColor.GREEN);
+        if (system.name != null && system.name.length() > 0) {
+            systemInfoBuilder.append(system.name).color(ChatColor.AQUA)
+                    .append(" (").color(ChatColor.GREEN)
+                    .append(system.id).color(ChatColor.GRAY)
+                    .append(")").color(ChatColor.GREEN);
+        } else {
+            systemInfoBuilder.append(system.id).color(ChatColor.GRAY);
+        }
         if (system.tag != null) {
-            systemInfoBuilder.append(system.tag).color(ChatColor.AQUA);
+            systemInfoBuilder.append("\nTag: ").color(ChatColor.GREEN).append(system.tag).color(ChatColor.AQUA);
         }
         return systemInfoBuilder.create();
     }
@@ -141,11 +148,15 @@ public class ChatUtils {
     static public BaseComponent[] displayMemberList(List<PluralKitMember> members, PluralKitSystem system) {
         ComponentBuilder memberListBuilder = new ComponentBuilder()
                 .append(pluginTag)
-                .append(" Members of ").color(ChatColor.GREEN)
-                .append(system.name).color(ChatColor.AQUA)
-                .append(" (").color(ChatColor.GREEN)
-                .append(system.id).color(ChatColor.GRAY)
-                .append(")").color(ChatColor.GREEN);
+                .append(" Members of ").color(ChatColor.GREEN);
+        if (system.name != null && system.name.length() > 0) {
+            memberListBuilder.append(system.name).color(ChatColor.AQUA)
+                    .append(" (").color(ChatColor.GREEN)
+                    .append(system.id).color(ChatColor.GRAY)
+                    .append(")").color(ChatColor.GREEN);
+        } else {
+            memberListBuilder.append(system.id).color(ChatColor.GRAY);
+        }
         for (int i = 0; i < members.size(); i++) {
             PluralKitMember member = members.get(i);
             memberListBuilder.append("\n")
@@ -158,11 +169,16 @@ public class ChatUtils {
     static public BaseComponent[] displayMemberSearch(List<PluralKitMember> members, PluralKitSystem system, String search) {
         ComponentBuilder memberListBuilder = new ComponentBuilder()
                 .append(pluginTag)
-                .append(" Members of ").color(ChatColor.GREEN)
-                .append(system.name).color(ChatColor.AQUA)
-                .append(" (").color(ChatColor.GREEN)
-                .append(system.id).color(ChatColor.GRAY)
-                .append(") matching ").color(ChatColor.GREEN)
+                .append(" Members of ").color(ChatColor.GREEN);
+        if (system.name != null && system.name.length() > 0) {
+            memberListBuilder.append(system.name).color(ChatColor.AQUA)
+                    .append(" (").color(ChatColor.GREEN)
+                    .append(system.id).color(ChatColor.GRAY)
+                    .append(")").color(ChatColor.GREEN);
+        } else {
+            memberListBuilder.append(system.id).color(ChatColor.GRAY);
+        }
+        memberListBuilder.append(" matching ").color(ChatColor.GREEN)
                 .append(search).color(ChatColor.AQUA);
         for (int i = 0; i < members.size(); i++) {
             PluralKitMember member = members.get(i);
