@@ -69,6 +69,9 @@ public class ProxyListener implements Listener {
             ourFormat = ourFormat.replace("%prefix%", prefix);
             ourFormat = ourFormat.replace("%suffix%", suffix);
             //Bukkit.getLogger().info("format: " + ourFormat);
+            if (!config.getBoolean("hover_text", false)) {
+                ourFormat = ourFormat.replace("%member%", memberName);
+            }
             event.setFormat(ourFormat.replaceAll("%","%%").replace("%%2$s","%2$s"));
             if (config.getBoolean("hover_text", false)) {
                 String resultMessage = String.format(event.getFormat(), player.getDisplayName(), event.getMessage());

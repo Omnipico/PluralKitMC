@@ -224,7 +224,7 @@ public class PluralKitData {
             String apMode = user.getAutoProxyMode();
             if (apMode.equals("member")) {
                 bestFit = user.getMemberById(user.getAutoProxyMember());
-            } else if (apMode.equals("latch")) {
+            } else if (apMode.equals("latch") && user.getLastProxied() != null) {
                 bestFit = user.getMemberById(user.getLastProxied());
             } else if (apMode.equals("front")) {
                 bestFit = user.getFirstFronter();
