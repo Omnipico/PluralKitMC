@@ -1,6 +1,7 @@
 package com.omnipico.pluralkitmc;
 
 
+import github.scarsz.discordsrv.DiscordSRV;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -29,10 +30,12 @@ public class ProxyListener implements Listener {
     PluralKitData data;
     String defaultNameColor;
     Chat chat;
+    DiscordSRV discord;
 
-    public ProxyListener(PluralKitData data, FileConfiguration config, Chat chat) {
+    public ProxyListener(PluralKitData data, FileConfiguration config, Chat chat, DiscordSRV discord) {
         this.data = data;
         this.chat = chat;
+        this.discord = discord;
 
         setConfig(config);
     }
@@ -59,7 +62,8 @@ public class ProxyListener implements Listener {
             String memberName = proxiedMember.name + " " + data.getSystemTag(player.getUniqueId());
             int prefixLength = pluralKitProxy.prefix != null ? pluralKitProxy.prefix.length() : 0;
             int suffixLength = pluralKitProxy.suffix != null ? pluralKitProxy.suffix.length() : 0;
-            event.setMessage(message.substring(prefixLength, message.length()-suffixLength));
+            message = message.substring(prefixLength, message.length()-suffixLength);
+            event.setMessage(message);
             String ourFormat = format;
             String nameColor = proxiedMember.color == null ? defaultNameColor : ChatUtils.replaceColor("&#" + proxiedMember.color);
             //ourFormat = ourFormat.replace("%member%", nameColor + memberName.replace("%2$s","%%2$s"));
@@ -123,6 +127,16 @@ public class ProxyListener implements Listener {
                 BaseComponent[] sendable = components.toArray(new BaseComponent[0]);
                 for (Player p : event.getRecipients()) {
                     p.spigot().sendMessage(sendable);
+                }
+                if (discord != null && config.getBoolean("discordsrv_compatibility", true)) {
+                    if (config.getBoolean("discordsrv_use_member_names", true)) {
+                        String oldDisplayName = player.getDisplayName();
+                        player.setDisplayName(memberName);
+                        discord.processChatMessage(player, message, "global", false);
+                        player.setDisplayName(oldDisplayName);
+                    } else {
+                        discord.processChatMessage(player, message, "global", false);
+                    }
                 }
                 event.setCancelled(true);
             }
