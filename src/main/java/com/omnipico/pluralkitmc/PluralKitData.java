@@ -23,6 +23,10 @@ public class PluralKitData {
         cacheUpdateFrequency = config.getLong("cache_update_frequency");
     }
 
+    public void setConfig(FileConfiguration config) {
+        this.config = config;
+    }
+
     String getSystemId(UUID uuid) {
         if (userCache.containsKey(uuid)) {
             return userCache.get(uuid).systemId;

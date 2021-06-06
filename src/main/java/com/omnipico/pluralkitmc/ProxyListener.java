@@ -32,15 +32,19 @@ public class ProxyListener implements Listener {
 
     public ProxyListener(PluralKitData data, FileConfiguration config, Chat chat) {
         this.data = data;
-        this.config = config;
         this.chat = chat;
+
+        setConfig(config);
+    }
+
+    public void setConfig(FileConfiguration config) {
+        this.config = config;
         defaultNameColor = ChatUtils.replaceColor(config.getString("default_name_color","&b"));
         if (config.contains("message_format")) {
             format = ChatUtils.replaceColor(Objects.requireNonNull(config.getString("message_format")).replace("%message%","%2$s"));
         } else {
             format = ChatColor.WHITE.toString() + "[PK] " + ChatColor.AQUA.toString() + "%member% " + ChatColor.DARK_GRAY + "> " + ChatColor.WHITE + "%2$s";
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST) // Listening for the event.

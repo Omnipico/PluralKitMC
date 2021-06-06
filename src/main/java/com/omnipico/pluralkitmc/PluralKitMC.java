@@ -6,6 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class PluralKitMC extends JavaPlugin {
     Chat chat;
+    PluralKitData data;
+    ProxyListener proxyListener;
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
@@ -13,16 +15,25 @@ public class PluralKitMC extends JavaPlugin {
             chat = getServer().getServicesManager().load(Chat.class);
         }
         FileConfiguration config = this.getConfig();
-        PluralKitData data = new PluralKitData(config, this);
+        this.data = new PluralKitData(config, this);
         //Fired when the server enables the plugin
         CommandPK commandPK = new CommandPK(data, this);
         this.getCommand("pk").setExecutor(commandPK);
         this.getCommand("pk").setTabCompleter(commandPK);
-        getServer().getPluginManager().registerEvents(new ProxyListener(data, config, chat), this);
+        proxyListener = new ProxyListener(data, config, chat);
+        getServer().getPluginManager().registerEvents(proxyListener, this);
     }
 
     @Override
     public void onDisable() {
         //Fired when the server stops and disables all plugins
     }
+
+    public void reloadConfigData() {
+        this.reloadConfig();
+        FileConfiguration config = this.getConfig();
+        proxyListener.setConfig(config);
+        data.setConfig(config);
+    }
+
 }

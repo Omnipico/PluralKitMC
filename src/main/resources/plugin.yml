@@ -1,5 +1,5 @@
 name: PluralKitMC
-version: 0.4.6
+version: 0.4.7
 author: Allymonies
 main: com.omnipico.pluralkitmc.PluralKitMC
 api-version: 1.16
@@ -20,6 +20,9 @@ permissions:
   pluralkitmc.link:
     default: true
     description: Allows linking one's pluralkit token to Minecraft (bypassing privacy settings)
+  pluralkitmc.reload:
+    default: false
+    description: Allows reloading the PluralKitMC config
   pluralkitmc.*:
     default: op
     description: Allows access to every pluralkitmc command.
@@ -27,3 +30,4 @@ permissions:
       pluralkitmc.pk: true
       pluralkitmc.update: true
       pluralkitmc.link: true
+      pluralkitmc.reload: true

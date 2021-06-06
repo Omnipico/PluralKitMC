@@ -18,9 +18,9 @@ import java.util.UUID;
 
 public class CommandPK implements CommandExecutor, TabCompleter {
     PluralKitData data;
-    JavaPlugin plugin;
+    PluralKitMC plugin;
 
-    public CommandPK(PluralKitData data, JavaPlugin plugin) {
+    public CommandPK(PluralKitData data, PluralKitMC plugin) {
         this.data = data;
         this.plugin = plugin;
     }
@@ -198,6 +198,13 @@ public class CommandPK implements CommandExecutor, TabCompleter {
                     } else {
                         player.spigot().sendMessage( new ComponentBuilder().append(ChatUtils.pluginTag).append(" Could not find any members :(").color(ChatColor.RED).create());
                     }
+                } else if (args[0].toLowerCase().equals("reload")) {
+                    if (player.hasPermission("pluralkitmc.reload") || player.hasPermission("pluralkitmc.*") || player.hasPermission("*")) {
+                        plugin.reloadConfigData();
+                        player.spigot().sendMessage( new ComponentBuilder().append(ChatUtils.pluginTag).append(" Config reloaded.").color(ChatColor.GREEN).create());
+                    } else {
+                        player.spigot().sendMessage( new ComponentBuilder("You do not have permission for this command.").color(ChatColor.RED).create());
+                    }
                 } else if (args[0].toLowerCase().equals("switch") || args[0].toLowerCase().equals("sw")) {
                     if (args.length >= 2) {
                         List<String> newFronters = new ArrayList<>();
@@ -244,6 +251,7 @@ public class CommandPK implements CommandExecutor, TabCompleter {
         subCommands.add("member");
         subCommands.add("random");
         subCommands.add("switch");
+        subCommands.add("reload");
         if (args.length == 1) {
             return subCommands;
         } else {
