@@ -150,12 +150,12 @@ public class UserCache {
         }
     }
 
-    public boolean verifyToken(String token) {
+    public static String verifyToken(String token) {
         URL url = null;
         try {
             url = new URL("https://api.pluralkit.me/v1/s/");
         } catch (MalformedURLException e) {
-            return false;
+            return null;
         }
         InputStreamReader reader = null;
         try {
@@ -166,9 +166,10 @@ public class UserCache {
             conn.addRequestProperty("User-Agent", "PluralKitMC");
             reader = new InputStreamReader(conn.getInputStream());
         } catch (IOException e) {
-            return false;
+            return null;
         }
-        return true;
+        PluralKitSystem system = new Gson().fromJson(reader, PluralKitSystem.class);
+        return system.id;
     }
 
     public List<PluralKitMember> getMembers() {

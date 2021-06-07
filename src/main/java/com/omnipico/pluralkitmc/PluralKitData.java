@@ -63,6 +63,15 @@ public class PluralKitData {
         userCache.put(uuid, user);
     }
 
+    void setSystemId(UUID uuid, String systemId, String token) {
+        config.set("players." + uuid.toString() + ".system", systemId);
+        plugin.saveConfig();
+
+        userCache.remove(uuid);
+        UserCache user = new UserCache(uuid, systemId, token, plugin);
+        userCache.put(uuid, user);
+    }
+
     UserCache getCacheOrCreate(UUID uuid) {
         if (userCache.containsKey(uuid)) {
             UserCache user = userCache.get(uuid);
@@ -85,9 +94,14 @@ public class PluralKitData {
         config.set("players." + uuid.toString() + ".token", token);
         plugin.saveConfig();
         UserCache user = getCacheOrCreate(uuid);
-        if (user.verifyToken(token)) {
-            user.setToken(token);
-            user.Update();
+        String systemId = UserCache.verifyToken(token);
+        if (systemId != null) {
+            if (user == null) {
+                setSystemId(uuid, systemId, token);
+            } else {
+                user.setToken(token);
+                user.Update();
+            }
             plugin.saveConfig();
             return true;
         }
