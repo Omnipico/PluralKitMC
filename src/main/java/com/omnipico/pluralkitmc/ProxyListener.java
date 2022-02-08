@@ -138,6 +138,7 @@ public class ProxyListener implements Listener {
                         discord.processChatMessage(player, message, "global", false);
                     }
                 }
+                Bukkit.getConsoleSender().spigot().sendMessage(sendable);
                 event.setCancelled(true);
             }
         }
