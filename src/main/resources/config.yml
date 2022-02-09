@@ -9,6 +9,9 @@ default_name_color: "&b"
 message_format: "&f%prefix% %member% %suffix%&8>&f %message%"
 #NOTE: Adding hover text may break some plugins! If you're having issues, set this to no
 hover_text: yes
+#If enabled, will not cancel the chat event, increasing plugin compatibility
+#Note that this will cause the server console to see username only, not member name
+keep_original_message_event: no
 #If enabled, will make sure DiscordSRV (if installed) sees
 #messages sent through pluralkitmc when hover_text is enabled.
 #REQUIRES RespectChatPlugins to be true, or else you will encounter double messages!
