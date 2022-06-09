@@ -2,20 +2,27 @@ package com.omnipico.pluralkitmc;
 
 public class PluralKitSystem {
     String id;
+    String uuid;
     String name;
     String description;
     String tag;
+    String pronouns;
     String avatar_url;
-    String tz;
+    String banner;
+    String color;
     String created;
+    // PluralKitPrivacy privacy;
 
-    public PluralKitSystem(String id, String name, String description, String tag, String avatar_url, String tz, String created) {
+    public PluralKitSystem(String id, String uuid, String name, String description, String tag, String pronouns, String avatar_url, String banner, String color, String created) {
         this.id = id;
+        this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.tag = tag;
+        this.pronouns = pronouns;
         this.avatar_url = avatar_url;
-        this.tz = tz;
+        this.banner = banner;
+        this.color = color;
         this.created = created;
     }
 
@@ -25,6 +32,14 @@ public class PluralKitSystem {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getName() {
@@ -51,6 +66,14 @@ public class PluralKitSystem {
         this.tag = tag;
     }
 
+    public String getPronouns() {
+        return pronouns;
+    }
+
+    public void setPronouns(String pronouns) {
+        this.pronouns = pronouns;
+    }
+
     public String getAvatar_url() {
         return avatar_url;
     }
@@ -59,12 +82,20 @@ public class PluralKitSystem {
         this.avatar_url = avatar_url;
     }
 
-    public String getTz() {
-        return tz;
+    public String getBanner() {
+        return banner;
     }
 
-    public void setTz(String tz) {
-        this.tz = tz;
+    public void setBanner(String banner) {
+        this.banner = banner;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public String getCreated() {

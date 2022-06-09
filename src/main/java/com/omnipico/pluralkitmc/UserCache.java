@@ -87,7 +87,7 @@ public class UserCache {
     private void updateSystem() {
         URL url = null;
         try {
-            url = new URL("https://api.pluralkit.me/v1/s/" + systemId);
+            url = new URL("https://api.pluralkit.me/v2/systems/" + systemId);
         } catch (MalformedURLException e) {
             system = null;
         }
@@ -113,7 +113,7 @@ public class UserCache {
     private void updateMembers() {
         URL url = null;
         try {
-            url = new URL("https://api.pluralkit.me/v1/s/" + systemId + "/members");
+            url = new URL("https://api.pluralkit.me/v2/systems/" + systemId + "/members");
         } catch (MalformedURLException e) {
             members = new ArrayList<PluralKitMember>();
         }
@@ -153,7 +153,7 @@ public class UserCache {
     public static String verifyToken(String token) {
         URL url = null;
         try {
-            url = new URL("https://api.pluralkit.me/v1/s/");
+            url = new URL("https://api.pluralkit.me/v2/systems/@me");
         } catch (MalformedURLException e) {
             return null;
         }

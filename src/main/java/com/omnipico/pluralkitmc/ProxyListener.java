@@ -114,10 +114,16 @@ public class ProxyListener implements Listener {
         if (proxiedMember != null && system != null) {
             String systemTag = data.getSystemTag(player.getUniqueId());
             String memberName;
-            if (systemTag != null && systemTag.length() > 0) {
-                memberName = proxiedMember.name + " " + systemTag;
+            String fullMemberName;
+            if (proxiedMember.display_name != null && proxiedMember.display_name.length() > 0) {
+                memberName = proxiedMember.display_name;
             } else {
                 memberName = proxiedMember.name;
+            }
+            if (systemTag != null && systemTag.length() > 0) {
+                fullMemberName = memberName + " " + systemTag;
+            } else {
+                fullMemberName = memberName;
             }
             int prefixLength = pluralKitProxy.prefix != null ? pluralKitProxy.prefix.length() : 0;
             int suffixLength = pluralKitProxy.suffix != null ? pluralKitProxy.suffix.length() : 0;
@@ -137,20 +143,20 @@ public class ProxyListener implements Listener {
             ourFormat = ourFormat.replace("%suffix%", suffix);
             //Bukkit.getLogger().info("format: " + ourFormat);
             if (!config.getBoolean("hover_text", false)) {
-                ourFormat = ourFormat.replace("%member%", memberName);
+                ourFormat = ourFormat.replace("%member%", fullMemberName);
             }
             event.setFormat(ourFormat.replaceAll("%","%%").replace("%%2$s","%2$s"));
             if (config.getBoolean("hover_text", false)) {
                 String resultMessage = String.format(event.getFormat(), player.getDisplayName(), event.getMessage());
                 BaseComponent[] resultComponents = TextComponent.fromLegacyText(resultMessage);
-                BaseComponent[] sendable = getOutputComponent(resultComponents, player, system, memberName);
+                BaseComponent[] sendable = getOutputComponent(resultComponents, player, system, fullMemberName);
                 for (Player p : event.getRecipients()) {
                     p.spigot().sendMessage(sendable);
                 }
                 if (discord != null && config.getBoolean("discordsrv_compatibility", true)) {
                     if (config.getBoolean("discordsrv_use_member_names", true)) {
                         String oldDisplayName = player.getDisplayName();
-                        player.setDisplayName(memberName);
+                        player.setDisplayName(fullMemberName);
                         discord.processChatMessage(player, message, "global", false);
                         player.setDisplayName(oldDisplayName);
                     } else {
@@ -171,7 +177,7 @@ public class ProxyListener implements Listener {
                     }
                 } else {
                     if (config.getBoolean("log_username", true)) {
-                        BaseComponent[] loggable = getOutputComponent(resultComponents, player, system, memberName, true);
+                        BaseComponent[] loggable = getOutputComponent(resultComponents, player, system, fullMemberName, true);
                         Bukkit.getConsoleSender().spigot().sendMessage(loggable);
                     } else {
                         Bukkit.getConsoleSender().spigot().sendMessage(sendable);

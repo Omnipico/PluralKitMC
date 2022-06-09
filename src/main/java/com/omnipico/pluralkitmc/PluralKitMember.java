@@ -4,27 +4,37 @@ import java.util.List;
 
 public class PluralKitMember {
     String id;
+    String uuid;
     String name;
+    String display_name;
     String color;
-    String avatar_url;
     String birthday;
     String pronouns;
+    String avatar_url;
+    String banner;
     String description;
+    String created;
     List<PluralKitProxy> proxy_tags;
     boolean keep_proxy;
-    String created;
+    //PluralKitPrivacy privacy;
 
-    public PluralKitMember(String id, String name, String color, String avatar_url, String birthday, String pronouns, String description, List<PluralKitProxy> proxy_tags, boolean keep_proxy, String created) {
+    public PluralKitMember( String id, String uuid, String name, String display_name, String color, String birthday,
+            String pronouns, String avatar_url, String banner, String description, String created,
+            List<PluralKitProxy> proxy_tags, boolean keep_proxy) {
         this.id = id;
+        this.uuid = uuid;
         this.name = name;
+        this.display_name = display_name;
         this.color = color;
-        this.avatar_url = avatar_url;
-        this.birthday = birthday;
         this.pronouns = pronouns;
+        this.birthday = birthday;
+        this.avatar_url = avatar_url;
+        this.banner = banner;
         this.description = description;
+        this.created = created;
         this.proxy_tags = proxy_tags;
         this.keep_proxy = keep_proxy;
-        this.created = created;
+
     }
 
     public String getId() {
@@ -35,6 +45,14 @@ public class PluralKitMember {
         this.id = id;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public String getName() {
         return name;
     }
@@ -43,20 +61,20 @@ public class PluralKitMember {
         this.name = name;
     }
 
+    public String getDisplay_name() {
+        return display_name;
+    }
+
+    public void setDisplay_name(String display_name) {
+        this.display_name = display_name;
+    }
+
     public String getColor() {
         return color;
     }
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public String getAvatar_url() {
-        return avatar_url;
-    }
-
-    public void setAvatar_url(String avatar_url) {
-        this.avatar_url = avatar_url;
     }
 
     public String getBirthday() {
@@ -75,12 +93,36 @@ public class PluralKitMember {
         this.pronouns = pronouns;
     }
 
+    public String getAvatar_url() {
+        return avatar_url;
+    }
+
+    public void setAvatar_url(String avatar_url) {
+        this.avatar_url = avatar_url;
+    }
+
+    public String getBanner() {
+        return banner;
+    }
+
+    public void setBanner(String banner) {
+        this.banner = banner;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
     }
 
     public List<PluralKitProxy> getProxy_tags() {
@@ -97,13 +139,5 @@ public class PluralKitMember {
 
     public void setKeep_proxy(boolean keep_proxy) {
         this.keep_proxy = keep_proxy;
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
     }
 }
