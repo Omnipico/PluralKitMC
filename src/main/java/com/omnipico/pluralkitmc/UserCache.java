@@ -1,6 +1,7 @@
 package com.omnipico.pluralkitmc;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,13 +22,15 @@ public class UserCache {
     List<PluralKitMember> members = new ArrayList<>();
     PluralKitSystem system = null;
     long lastUpdated = 0;
+    boolean updateMembersToggle = false;
     String autoProxyMode = "off";
     String autoProxyMember = null;
     String lastProxied = null;
     List<PluralKitMember> fronters = new ArrayList<>();
-    JavaPlugin plugin;
+    PluralKitMC plugin;
     FileConfiguration config;
-    public UserCache(UUID uuid, String systemId, JavaPlugin plugin) {
+
+    public UserCache(UUID uuid, String systemId, PluralKitMC plugin, boolean blocking) {
         this.uuid = uuid;
         this.systemId = systemId;
         this.plugin = plugin;
@@ -36,12 +39,12 @@ public class UserCache {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                Update();
+                update(blocking);
             }
         });
     }
 
-    public UserCache(UUID uuid, String systemId, String token, JavaPlugin plugin) {
+    public UserCache(UUID uuid, String systemId, String token, PluralKitMC plugin, boolean blocking) {
         this.uuid = uuid;
         this.systemId = systemId;
         this.token = token;
@@ -51,16 +54,25 @@ public class UserCache {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                Update();
+                update(blocking);
             }
         });
     }
 
-    public void Update() {
+    public void update(boolean blocking) {
         Date date = new Date();
         lastUpdated = date.getTime();
-        updateSystem();
-        updateMembers();
+        // Alternate between updating members and system if this is not blocking (to avoid hitting rate limits)
+        if (blocking) {
+            updateSystem(true);
+            updateMembers(true);
+        } else if (updateMembersToggle) {
+            updateMembers(false);
+            updateMembersToggle = !updateMembersToggle;
+        } else {
+            updateSystem(false);
+            updateMembersToggle = !updateMembersToggle;
+        }
         if (config.getBoolean("cache_data", false)) {
             Gson gson = new Gson();
             config.set("players." + uuid.toString() + ".system_cache", gson.toJson(system));
@@ -84,73 +96,127 @@ public class UserCache {
         }
     }
 
-    private void updateSystem() {
+    private void updateSystem(boolean blocking) {
+        if (blocking) {
+            try {
+                plugin.apiSemaphore.acquire();
+            } catch (InterruptedException e) {
+                plugin.getLogger().warning("System update was interrupted!");
+                return;
+            }
+        } else {
+            boolean acquired = plugin.apiSemaphore.tryAcquire();
+            if (!acquired) {
+                return;
+            }
+        }
         URL url = null;
         try {
             url = new URL("https://api.pluralkit.me/v2/systems/" + systemId);
         } catch (MalformedURLException e) {
             system = null;
         }
-        InputStreamReader reader = null;
+        InputStreamReader reader;
+        HttpsURLConnection conn = null;
         try {
             assert url != null;
-            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+            conn = (HttpsURLConnection) url.openConnection();
             if (token != null) {
                 conn.setRequestProperty("Authorization", token);
             }
             conn.addRequestProperty("User-Agent", "PluralKitMC");
             reader = new InputStreamReader(conn.getInputStream());
         } catch (IOException e) {
-            system = null;
+            if (conn != null && conn.getErrorStream() != null) {
+                InputStreamReader errorReader = new InputStreamReader(conn.getErrorStream());
+                PluralKitError pkError = new Gson().fromJson(errorReader, PluralKitError.class);
+                if (pkError.retryAfter != null) {
+                    // Hit a rate limit
+                    // Unfortunately, we can't really disable the semaphore
+                    plugin.getLogger().severe("Hit a rate limit while fetching system info for " + systemId);
+                }
+            } else {
+                plugin.getLogger().warning("Failed to get system info for " + systemId);
+            }
+            if (members == null) {
+                members = new ArrayList<>();
+            }
+            return;
         }
-        if (reader != null) {
-            system = new Gson().fromJson(reader, PluralKitSystem.class);
-        } else {
-            system = null;
-        }
+        system = new Gson().fromJson(reader, PluralKitSystem.class);
     }
 
-    private void updateMembers() {
+    private void updateMembers(boolean blocking) {
+        if (blocking) {
+            try {
+                plugin.apiSemaphore.acquire();
+            } catch (InterruptedException e) {
+                plugin.getLogger().warning("Member update was interrupted!");
+                return;
+            }
+        } else {
+            boolean acquired = plugin.apiSemaphore.tryAcquire();
+            if (!acquired) {
+                return;
+            }
+        }
         URL url = null;
         try {
             url = new URL("https://api.pluralkit.me/v2/systems/" + systemId + "/members");
         } catch (MalformedURLException e) {
-            members = new ArrayList<PluralKitMember>();
+            members = new ArrayList<>();
         }
-        InputStreamReader reader = null;
+        InputStreamReader reader;
+        HttpsURLConnection conn = null;
         try {
             assert url != null;
-            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+            conn = (HttpsURLConnection) url.openConnection();
             if (token != null) {
                 conn.setRequestProperty("Authorization", token);
             }
             conn.addRequestProperty("User-Agent", "PluralKitMC");
             reader = new InputStreamReader(conn.getInputStream());
         } catch (IOException e) {
-            members = new ArrayList<PluralKitMember>();
+            if (conn != null) {
+                InputStreamReader errorReader = new InputStreamReader(conn.getErrorStream());
+                PluralKitError pkError = new Gson().fromJson(errorReader, PluralKitError.class);
+                if (pkError.retryAfter != null) {
+                    // Hit a rate limit
+                    // Unfortunately, we can't really disable the semaphore
+                    plugin.getLogger().severe("Hit a rate limit while fetching system members for " + systemId);
+                }
+            } else {
+                plugin.getLogger().warning("Failed to get system members for " + systemId);
+            }
+            if (members == null) {
+                members = new ArrayList<>();
+            }
+            return;
         }
         Type listType = new TypeToken<List<PluralKitMember>>(){}.getType();
-        if (reader != null) {
-            members = new Gson().fromJson(reader, listType);
-        } else {
-            members = new ArrayList<PluralKitMember>();
-        }
+        members = new Gson().fromJson(reader, listType);
     }
 
-    void UpdateIfNeeded(long updateFrequency) {
+    void updateIfNeeded(long updateFrequency, boolean blocking) {
         Date date = new Date();
         long now = date.getTime();
         if (now >= (lastUpdated + updateFrequency)) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    Update();
+                    update(blocking);
                 }
             });
         }
     }
 
-    public static String verifyToken(String token) {
+    public static String verifyToken(PluralKitMC plugin, String token) {
+        try {
+            plugin.apiSemaphore.acquire();
+        } catch (InterruptedException e) {
+            plugin.getLogger().warning("Token verification was interrupted!");
+            return null;
+        }
         URL url = null;
         try {
             url = new URL("https://api.pluralkit.me/v2/systems/@me");

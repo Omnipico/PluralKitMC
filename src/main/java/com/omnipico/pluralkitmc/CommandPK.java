@@ -48,7 +48,9 @@ public class CommandPK implements CommandExecutor, TabCompleter {
                     player.spigot().sendMessage(ChatUtils.helpMessage);
                 } else if (args[0].toLowerCase().equals("update") || args[0].toLowerCase().equals("u")) {
                     if (player.hasPermission("pluralkitmc.update") || player.hasPermission("pluralkitmc.*") || player.hasPermission("*")) {
-                        data.updateCache(player.getUniqueId());
+                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                            data.updateCache(player.getUniqueId(), true);
+                        });
                         player.spigot().sendMessage( new ComponentBuilder().append(ChatUtils.pluginTag).append(" Your system is being updated and will be active momentarily.").color(ChatColor.GREEN).create());
                     } else {
                         player.spigot().sendMessage( new ComponentBuilder("You do not have permission for this command.").color(ChatColor.RED).create());
@@ -56,7 +58,9 @@ public class CommandPK implements CommandExecutor, TabCompleter {
                 } else if (args[0].toLowerCase().equals("load") || args[0].toLowerCase().equals("l")) {
                     if (args.length == 2) {
                         if (args[1].length() == 5) {
-                            data.setSystemId(player.getUniqueId(), args[1].toLowerCase());
+                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                data.setSystemId(player.getUniqueId(), args[1].toLowerCase());
+                            });
                             player.spigot().sendMessage( new ComponentBuilder().append(ChatUtils.pluginTag)
                                     .append(" Set system id to ").color(ChatColor.GREEN)
                                     .append(args[1]).color(ChatColor.AQUA)

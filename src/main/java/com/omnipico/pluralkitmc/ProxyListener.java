@@ -2,6 +2,7 @@ package com.omnipico.pluralkitmc;
 
 
 import github.scarsz.discordsrv.DiscordSRV;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -31,11 +32,14 @@ public class ProxyListener implements Listener {
     String defaultNameColor;
     Chat chat;
     DiscordSRV discord;
+    boolean usePlaceholderAPI;
 
-    public ProxyListener(PluralKitData data, FileConfiguration config, Chat chat, DiscordSRV discord) {
+    public ProxyListener(PluralKitData data, FileConfiguration config, Chat chat, DiscordSRV discord, boolean usePlaceholderAPI) {
         this.data = data;
         this.chat = chat;
         this.discord = discord;
+        this.usePlaceholderAPI = usePlaceholderAPI;
+
 
         setConfig(config);
     }
@@ -144,6 +148,9 @@ public class ProxyListener implements Listener {
             //Bukkit.getLogger().info("format: " + ourFormat);
             if (!config.getBoolean("hover_text", false)) {
                 ourFormat = ourFormat.replace("%member%", fullMemberName);
+            }
+            if (usePlaceholderAPI) {
+                ourFormat = PlaceholderAPI.setPlaceholders(player, ourFormat);
             }
             event.setFormat(ourFormat.replaceAll("%","%%").replace("%%2$s","%2$s"));
             if (config.getBoolean("hover_text", false)) {

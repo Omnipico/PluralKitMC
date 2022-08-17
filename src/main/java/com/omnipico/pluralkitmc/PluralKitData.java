@@ -1,23 +1,17 @@
 package com.omnipico.pluralkitmc;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 public class PluralKitData {
     FileConfiguration config;
-    JavaPlugin plugin;
+    PluralKitMC plugin;
     Map<UUID, UserCache> userCache = new HashMap<>();
     long cacheUpdateFrequency;
-    public PluralKitData(FileConfiguration config, JavaPlugin plugin) {
+
+    public PluralKitData(FileConfiguration config, PluralKitMC plugin) {
         this.config = config;
         this.plugin = plugin;
         cacheUpdateFrequency = config.getLong("cache_update_frequency");
@@ -59,7 +53,7 @@ public class PluralKitData {
             token = userCache.get(uuid).getToken();
         }
         userCache.remove(uuid);
-        UserCache user = new UserCache(uuid, systemId, token, plugin);
+        UserCache user = new UserCache(uuid, systemId, token, plugin, true);
         userCache.put(uuid, user);
     }
 
@@ -68,20 +62,20 @@ public class PluralKitData {
         plugin.saveConfig();
 
         userCache.remove(uuid);
-        UserCache user = new UserCache(uuid, systemId, token, plugin);
+        UserCache user = new UserCache(uuid, systemId, token, plugin, true);
         userCache.put(uuid, user);
     }
 
-    UserCache getCacheOrCreate(UUID uuid) {
+    UserCache getCacheOrCreate(UUID uuid, boolean blocking) {
         if (userCache.containsKey(uuid)) {
             UserCache user = userCache.get(uuid);
-            user.UpdateIfNeeded(cacheUpdateFrequency);
+            user.updateIfNeeded(cacheUpdateFrequency, blocking);
             return user;
         } else {
             String systemId = getSystemId(uuid);
             String token = getToken(uuid);
             if (systemId != null) {
-                UserCache user = new UserCache(uuid, systemId, token, plugin);
+                UserCache user = new UserCache(uuid, systemId, token, plugin, blocking);
                 userCache.put(uuid, user);
                 return user;
             } else {
@@ -90,17 +84,21 @@ public class PluralKitData {
         }
     }
 
+    UserCache getCacheOrCreate(UUID uuid) {
+        return getCacheOrCreate(uuid, false);
+    }
+
     boolean setToken(UUID uuid, String token) {
         config.set("players." + uuid.toString() + ".token", token);
         plugin.saveConfig();
         UserCache user = getCacheOrCreate(uuid);
-        String systemId = UserCache.verifyToken(token);
+        String systemId = UserCache.verifyToken(plugin, token);
         if (systemId != null) {
             if (user == null) {
                 setSystemId(uuid, systemId, token);
             } else {
                 user.setToken(token);
-                user.Update();
+                user.update(true);
             }
             plugin.saveConfig();
             return true;
@@ -149,9 +147,9 @@ public class PluralKitData {
         }
     }
 
-    void updateCache(UUID uuid) {
-        UserCache user = getCacheOrCreate(uuid);
-        user.Update();
+    void updateCache(UUID uuid, boolean blocking) {
+        UserCache user = getCacheOrCreate(uuid, blocking);
+        user.update(blocking);
     }
 
     void clearCache(UUID uuid) {
