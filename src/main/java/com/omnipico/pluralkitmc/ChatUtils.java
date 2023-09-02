@@ -94,6 +94,9 @@ public class ChatUtils {
                 }
             }
         }
+        if (member.getDescription() != null) {
+            memberInfoBuilder.append("\nDescription: ").color(ChatColor.GREEN).append(member.getDescription()).color(ChatColor.GRAY);
+        }
         memberInfoBuilder.append("\nCreated: ").color(ChatColor.GREEN).append(member.getCreated()).color(ChatColor.AQUA);
         memberInfoBuilder.append("\nSystem ID: ").color(ChatColor.GREEN).append(system.getId()).color(ChatColor.GRAY);
         memberInfoBuilder.append("\nMember ID: ").color(ChatColor.GREEN).append(member.getId()).color(ChatColor.GRAY);
@@ -114,6 +117,9 @@ public class ChatUtils {
         }
         if (system.tag != null) {
             systemInfoBuilder.append("\nTag: ").color(ChatColor.GREEN).append(system.tag).color(ChatColor.AQUA);
+        }
+        if (system.description != null && system.description.length() > 0) {
+            systemInfoBuilder.append("\nDescription: ").color(ChatColor.GREEN).append(system.description).color(ChatColor.GRAY);
         }
         return systemInfoBuilder.create();
     }

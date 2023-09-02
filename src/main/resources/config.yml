@@ -5,8 +5,9 @@ cache_update_frequency: 300000
 #If Vault is installed, %prefix% and %suffix% may be used for the player's prefix and suffix, respectively
 default_name_color: "&b"
 #Here's a vanilla style template for those without prefixes:
-#message_format: "&f<%member%&f> %message%"
-message_format: "&f%prefix% %member% %suffix%&8>&f %message%"
+message_format: "&f<%member%&f> %message%"
+#Here's an example with prefixes:
+#message_format: "&f%prefix% %member% %suffix%&8>&f %message%"
 #NOTE: Adding hover text may break some plugins! If you're having issues, set this to no
 hover_text: yes
 #If enabled, will not cancel the chat event, increasing plugin compatibility
