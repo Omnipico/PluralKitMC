@@ -57,7 +57,7 @@ public class CommandPK implements CommandExecutor, TabCompleter {
                     }
                 } else if (args[0].toLowerCase().equals("load") || args[0].toLowerCase().equals("l")) {
                     if (args.length == 2) {
-                        if (args[1].length() == 5) {
+                        if (args[1].length() == 5 || args[1].length() == 6) {
                             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                                 data.setSystemId(player.getUniqueId(), args[1].toLowerCase());
                             });
@@ -67,7 +67,7 @@ public class CommandPK implements CommandExecutor, TabCompleter {
                                     .append(", it will be active momentarily").color(ChatColor.GREEN)
                                     .create());
                         } else {
-                            player.spigot().sendMessage( new ComponentBuilder().append(ChatUtils.pluginTag).append(" System ids must be 5 characters long.").color(ChatColor.RED).create());
+                            player.spigot().sendMessage( new ComponentBuilder().append(ChatUtils.pluginTag).append(" System ids must be 5/6 characters long.").color(ChatColor.RED).create());
                         }
                     } else {
                         player.spigot().sendMessage( new ComponentBuilder().append(ChatUtils.pluginTag).append(" Usage: /pk load <system id>").color(ChatColor.RED).create());

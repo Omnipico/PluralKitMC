@@ -113,8 +113,8 @@ public class ProxyListener implements Listener {
         String originalFormat = event.getFormat();
         String message = event.getMessage();
         PluralKitSystem system = data.getSystem(player.getUniqueId());
-        PluralKitMember proxiedMember = data.getProxiedUser(player.getUniqueId(), message);
-        PluralKitProxy pluralKitProxy = data.getProxy(player.getUniqueId(), message);
+        PluralKitMember proxiedMember = data.getProxiedUser(player.getUniqueId(), message.toLowerCase());
+        PluralKitProxy pluralKitProxy = data.getProxy(player.getUniqueId(), message.toLowerCase());
         if (proxiedMember != null && system != null) {
             String systemTag = data.getSystemTag(player.getUniqueId());
             String memberName;
