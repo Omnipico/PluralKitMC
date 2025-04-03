@@ -57,7 +57,7 @@ public class CommandPK implements CommandExecutor, TabCompleter {
                     }
                 } else if (args[0].toLowerCase().equals("load") || args[0].toLowerCase().equals("l")) {
                     if (args.length == 2) {
-                        if (args[1].length() == 5 || args[1].length() == 5) {
+                        if (args[1].length() == 5 || args[1].length() == 6) {
                             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                                 data.setSystemId(player.getUniqueId(), args[1].toLowerCase());
                             });
