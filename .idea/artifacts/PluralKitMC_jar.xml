@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="PluralKitMC:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/PluralKitMC_jar</output-path>
-    <root id="archive" name="PluralKitMC.jar">
-      <element id="module-output" name="Omnipico" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/spigot-api-1.16.3-R0.1-20201017.202830-25.jar" path-in-jar="/" />
-    </root>
-  </artifact>
-</component>
